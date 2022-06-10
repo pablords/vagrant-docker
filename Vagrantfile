@@ -1,15 +1,14 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/bionic64"
 
-  config.vm.define 'dev' do |machine|
-    machine.vm.synced_folder "./apps", "/home/vagrant/apps"
+  config.vm.define 'docker' do |machine|
+    machine.vm.synced_folder "~/desktop/devops/metricas", "/home/vagrant/metricas"
     machine.vm.synced_folder "./ansible", "/home/vagrant/ansible"
-    config.vm.network "forwarded_port", guest: 8080, host: 8080
+    machine.vm.network "forwarded_port", guest: 8080, host: 8080
     machine.vm.provider "virtualbox" do |v|
-      v.memory = 4048
+      v.memory = 2048
       v.cpus = 2
-      v.name = "dev"
-      v.customize ["--natdnshostresolver1", "on"]
+      v.name = "docker"
     end
     machine.vm.provision :ansible_local do |ansible|
       ansible.playbook          = "playbook.yml"

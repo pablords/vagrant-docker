@@ -10,3 +10,4 @@ common_packages_debian:
   - gnupg
   - lsb-release
   - apt-transport-https
+  - wget

@@ -1,0 +1,4 @@
+
+
+common_packages_maven:
+  - openjdk-8-jdk

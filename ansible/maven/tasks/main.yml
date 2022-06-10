@@ -1,0 +1,37 @@
+- name: Debian Like | Install common packages Maven
+  apt: name={{ common_packages_maven }} state=latest
+
+- name: get Maven install
+  get_url:
+    url: https://dlcdn.apache.org/maven/maven-3/3.8.5/binaries/apache-maven-3.8.5-bin.tar.gz
+    dest: /opt/
+
+- name: Extract maven install
+  unarchive:
+    src: /opt/apache-maven-3.8.5-bin.tar.gz
+    dest: /opt/
+
+- name: maven.gz
+  stat: path=/opt/apache-maven-3.8.5
+  register: maven_stat
+
+- name: maven source
+  stat: path=/opt/maven
+  register: maven_stat_create
+
+- name: Move maven.gz to maven
+  command: mv /opt/apache-maven-3.8.5 /opt/maven
+  when: maven_stat.stat.exists and not maven_stat_create.stat.exists
+
+- name: Creating a file with content
+  copy:
+    dest: /etc/profile.d/mavenenv.sh
+    content: |
+      export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
+      export M2_HOME=/opt/maven
+      export PATH=${M2_HOME}/bin:${PATH}
+
+- name: Changing perm of "/etc/profile.d/mavenenv.sh", adding "+x"
+  file: dest=/etc/profile.d/mavenenv.sh mode=a+x
+
+
